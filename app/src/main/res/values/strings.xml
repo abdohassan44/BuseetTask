@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Buseet Task</string>
+    <string name="error">Error</string>
+
+    <!--Gbs -->
+    <string name="please_open_location">Enable location services for a more accurate pickup experience</string>
+    <string name="turn_on_location">Turn on location services</string>
+    <string name="enable">Enable</string>
+
+    <!--Internet -->
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="check_your_network_setting_and_try_again">Check your network setting and try again</string>
+    <string name="noconnection"> No Internet Connection </string>
+    <!--location -->
+
+    <string name="please_enable_permissions">Please Enable Location Permissions</string>
+
+    <string name="something_wrong">Something went wrong</string>
+
+
+</resources>
