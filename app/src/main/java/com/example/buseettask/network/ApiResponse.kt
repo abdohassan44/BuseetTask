@@ -31,7 +31,6 @@ data class Venues(
         @SerializedName("verified") val verified: Boolean,
         @SerializedName("referralId") val referralId: String,
         @SerializedName("hasPerk") val hasPerk: Boolean,
-        @SerializedName("distance") val distance: Int
 
 )
 {
@@ -57,5 +56,5 @@ data class Location(
         @SerializedName("address") val address: String? = "",
         @SerializedName("lat") val lat: Double,
         @SerializedName("lng") val lng: Double,
-        @SerializedName("distance") val distance: Int,
+        @SerializedName("distance") val distance: Int? = 0,
 )

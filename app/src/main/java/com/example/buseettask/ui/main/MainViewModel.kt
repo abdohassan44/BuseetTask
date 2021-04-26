@@ -18,7 +18,6 @@ class MainViewModel @Inject constructor(
     private val _status = MutableLiveData<Status<ApiResponse>>()
     val status: LiveData<Status<ApiResponse>> get() = _status
 
-
      fun getRestaurantsList(limit: Int, latitiude: Double, longtiude: Double) {
         viewModelScope.launch {
             repository.getRestaurants(
@@ -31,6 +30,4 @@ class MainViewModel @Inject constructor(
             )
         }
     }
-
-
 }

@@ -32,12 +32,9 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, RestaurantAdapter.Click
     private lateinit var binding: ActivityMainBinding
     var latitiude: Double = 0.0
     var longtiude: Double = 0.0
-    val TAG = "MainActivity"
     private var googleMap: GoogleMap? = null
     private lateinit var currentLoction: LatLng
     private val viewModel: MainViewModel by viewModels()
-   private lateinit var restaurantList: List<Venues>
-
     private lateinit var  adapter :RestaurantAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,21 +121,11 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, RestaurantAdapter.Click
 
     private fun onSuccess(data: ApiResponse) {
         ProgressLoading.dismiss()
-
-
-        restaurantList=data.response.venues.sortedBy {
-            it.distance
-        }
-        adapter.submitList(restaurantList)
-        Log.e("MainActivity", data.response.venues.size.toString())
-
-        Log.e("MainActivity", "onSuccess")
-
+        val sortedList = data.response.venues.sortedBy { it.location.distance }
+        adapter.submitList(sortedList)
     }
 
     private fun onError(error: Status.Error) {
-        Log.e("MainActivity", "onError")
-
         binding.orderRV .isVisible = false
         ProgressLoading.dismiss()
         val message = error.getMessage(this ?: return)
@@ -165,8 +152,5 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, RestaurantAdapter.Click
             alertDialog.setPositiveButton("YES", DialogInterface.OnClickListener { dialog, which -> })
             alertDialog.show()
         }
-
-
-
     }
 }
