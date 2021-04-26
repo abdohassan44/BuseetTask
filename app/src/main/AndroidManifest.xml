@@ -17,7 +17,7 @@
         android:theme="@style/Theme.BuseetTask"
         android:usesCleartextTraffic="true"
         android:windowDisablePreview="true">
-        <activity android:name=".ui.SpalshScreen">
+        <activity android:name=".ui.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

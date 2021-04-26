@@ -7,7 +7,7 @@ import com.example.buseettask.R
 import com.example.buseettask.ui.main.MainActivity
 import kotlin.concurrent.thread
 
-class SpalshScreen : AppCompatActivity() {
+class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         overridePendingTransition(R.anim.enter, R.anim.exit)

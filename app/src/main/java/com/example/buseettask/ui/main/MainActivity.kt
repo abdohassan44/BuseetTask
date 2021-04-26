@@ -1,14 +1,16 @@
 package com.example.buseettask.ui.main
 
+import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.buseettask.R
 import com.example.buseettask.base.BaseActivity
 import com.example.buseettask.databinding.ActivityMainBinding
 import com.example.buseettask.network.ApiResponse
@@ -34,6 +36,7 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, RestaurantAdapter.Click
     private var googleMap: GoogleMap? = null
     private lateinit var currentLoction: LatLng
     private val viewModel: MainViewModel by viewModels()
+   private lateinit var restaurantList: List<Venues>
 
     private lateinit var  adapter :RestaurantAdapter
 
@@ -48,7 +51,7 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, RestaurantAdapter.Click
     private fun initList()
     {
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        adapter  = RestaurantAdapter(this, this,listOf())
+        adapter  = RestaurantAdapter(this, this, listOf())
         binding.orderRV.layoutManager = layoutManager
         binding.orderRV.adapter = adapter
 
@@ -73,7 +76,7 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, RestaurantAdapter.Click
         latitiude=lat
         longtiude=long
         currentLoction = LatLng(latitiude, longtiude)
-        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLoction,16f))
+        googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLoction, 16f))
 
     }
 
@@ -84,7 +87,7 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, RestaurantAdapter.Click
                 latitiude= googleMap?.cameraPosition?.target?.latitude!!
                 longtiude= googleMap?.cameraPosition?.target?.longitude!!
 
-                viewModel.getRestaurantsList(50,latitiude,longtiude)
+                viewModel.getRestaurantsList(50, latitiude, longtiude)
 
             }
         }
@@ -94,9 +97,9 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, RestaurantAdapter.Click
         if (googleMap == null) return
         googleMap!!.clear()
         googleMap!!.addMarker(
-            MarkerOptions()
-                .position(currentLoction)
-                .title("your location")
+                MarkerOptions()
+                        .position(currentLoction)
+                        .title("your location")
 
         )
         googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLoction, 16f))
@@ -104,33 +107,66 @@ class MainActivity : BaseActivity(), OnMapReadyCallback, RestaurantAdapter.Click
     }
 
     override fun onItemClick(item: Venues) {
-
+        binding.restaurantItem.root.visibility = View.VISIBLE
+        binding.restaurantItem.TVRetaurantname.text=item.name
+        binding.restaurantItem.TVAddress.text=item.location.address
+        binding.restaurantItem.IVDirection.setOnClickListener {
+            val uri = "google.navigation:q= ${item.location.lat},${item.location.lng}"
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(uri)
+            this.startActivity(intent)
+        }
     }
     private fun onLoading() {
         ProgressLoading.show(this)
-        Log.e("MainActivity","onLoading")
+        Log.e("MainActivity", "onLoading")
     }
 
     private fun onSuccess(data: ApiResponse) {
         ProgressLoading.dismiss()
-        adapter.submitList(data.response.venues)
-        Log.e("MainActivity",data.response.venues.size.toString())
 
-        Log.e("MainActivity","onSuccess")
+
+        restaurantList=data.response.venues.sortedBy {
+            it.distance
+        }
+        adapter.submitList(restaurantList)
+        Log.e("MainActivity", data.response.venues.size.toString())
+
+        Log.e("MainActivity", "onSuccess")
 
     }
 
     private fun onError(error: Status.Error) {
-        Log.e("MainActivity","onError")
+        Log.e("MainActivity", "onError")
 
         binding.orderRV .isVisible = false
         ProgressLoading.dismiss()
         val message = error.getMessage(this ?: return)
         this
             .showDialog(
-                message = message.message,
-                iconID = message.iconRes,
-                colorID = message.colorId
+                    message = message.message,
+                    iconID = message.iconRes,
+                    colorID = message.colorId
             )
+    }
+
+    override fun onBackPressed() {
+        if(binding.restaurantItem.root.visibility==View.VISIBLE)
+        {
+            googleMap!!.clear()
+            googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLoction, 16f))
+            binding.restaurantItem.root.visibility=View.GONE
+        }
+        else
+        {
+            val alertDialog: AlertDialog.Builder = AlertDialog.Builder(this)
+            alertDialog.setTitle("close your app")
+            alertDialog.setNegativeButton("NO", DialogInterface.OnClickListener { dialog, which -> dialog.cancel() })
+            alertDialog.setPositiveButton("YES", DialogInterface.OnClickListener { dialog, which -> })
+            alertDialog.show()
+        }
+
+
+
     }
 }

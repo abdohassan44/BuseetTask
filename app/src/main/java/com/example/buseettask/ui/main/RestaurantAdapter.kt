@@ -35,6 +35,9 @@ class RestaurantAdapter(private val clickListener: ClickListener,val context: Co
                 longitude = restaurantItem.location.lng
             )
         }
+        holder.itemView.setOnClickListener {
+            clickListener.onItemClick(restaurantItem)
+        }
     }
 
     inner class RestaurantAdapterViewHolder internal constructor(itemView: View) :

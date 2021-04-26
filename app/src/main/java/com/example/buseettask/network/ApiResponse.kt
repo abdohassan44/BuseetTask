@@ -30,7 +30,9 @@ data class Venues(
         @SerializedName("location") val location: Location,
         @SerializedName("verified") val verified: Boolean,
         @SerializedName("referralId") val referralId: String,
-        @SerializedName("hasPerk") val hasPerk: Boolean
+        @SerializedName("hasPerk") val hasPerk: Boolean,
+        @SerializedName("distance") val distance: Int
+
 )
 {
         companion object DIFFUtil : DiffUtil.ItemCallback<Venues>() {
